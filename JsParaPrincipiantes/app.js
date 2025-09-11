@@ -1,24 +1,9 @@
-// Tipo de datos 
-"Hellow Word" // string
-'Hellow Word' // string
+var nameuser = "john";
+let lastname = "carter";
 
-1000000 // number
--2.3
+nameuser = 'pepe';
 
-// boolean
-true
-false
+const PI = 3.1416;
+PI = 100;
 
-// array
-['joe', 'ryan', 'martha']
-[1,2,3]
-[true, false, true, false]
-
-// object
-
-{
-    "username": 'ryan',
-    "score": 70.4,
-    "hours": 14,
-    "proffesional": true
-}
+console.log(PI)
