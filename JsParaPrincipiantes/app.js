@@ -1,9 +1,16 @@
-let typeCard = 'Devid Card';
+//Ciclo while
 
-switch(typeCard){
-    case 'Devid Card':
-        console.log('This a debid card');
-        break;
-    case 'Credit Card':
-        console.log('This is a credit card');
+//let count = 0;
+
+/*while(count <= 50){
+    console.log(count);
+    count++;
+}
+*/
+
+//Ciclo for
+let names = ['ryan', 'joe', 'john'];
+
+for(let i = names.length - 1; i >= 0; i-- ){
+    console.log(names[i]);   
 }
