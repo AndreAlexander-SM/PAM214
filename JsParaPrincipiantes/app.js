@@ -1,9 +1,9 @@
-var nameuser = "john";
-let lastname = "carter";
+let typeCard = 'Devid Card';
 
-nameuser = 'pepe';
-
-const PI = 3.1416;
-PI = 100;
-
-console.log(PI)
+switch(typeCard){
+    case 'Devid Card':
+        console.log('This a debid card');
+        break;
+    case 'Credit Card':
+        console.log('This is a credit card');
+}
