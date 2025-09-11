@@ -1,16 +1,5 @@
-//Ciclo while
 
-//let count = 0;
-
-/*while(count <= 50){
-    console.log(count);
-    count++;
+function add(n1, n2){
+    console.log(n1 + n2);
 }
-*/
-
-//Ciclo for
-let names = ['ryan', 'joe', 'john'];
-
-for(let i = names.length - 1; i >= 0; i-- ){
-    console.log(names[i]);   
-}
+add(6, 4);
