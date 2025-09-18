@@ -27,3 +27,10 @@ let resultado2 = cuadrado(9);
 console.log(resultado2);
 let resultado3 = cuadrado(3);
 console.log(resultado3);
+
+// Ejercicio 3 
+
+const saludoPersonalizado = (nombre, edad) => "Hola, me llamo " + nombre + " y tengo "+ edad + " años.";
+
+let mostrar = saludoPersonalizado("Andre",18);
+console.log(mostrar);
