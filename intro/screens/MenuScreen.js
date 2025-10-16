@@ -36,17 +36,19 @@ export default function MenuScreen() {
         case 'menu':
             default:
                 return (
-                    <View>
-                    <Text>Menu Practicas</Text>
-                    <Button onPress={()=>setScreen('contador')} title='Practica:Contador'/>
-                    <Button onPress={()=>setScreen('botones')} title='Practica:Buttons'/>
-                    <Button onPress={()=>setScreen('textImput')} title='Practica:TextImput'/>
-                    <Button onPress={()=>setScreen('ImageBackground')} title='Practica:ImageBackground'/>
-                    <Button onPress={()=>setScreen('scrollview')} title='Practica:ScrollView'/>
-                    <Button onPress={()=>setScreen('activityindicator')} title='Practica:ActivityIndicator'/>
-                    <Button onPress={()=>setScreen('flatList')} title='Practica:FlatList'/>
-                    <Button onPress={()=>setScreen('modal')} title='Practica:Modal'/>
-                    <Button onPress={()=>setScreen('bottom')} title='Practica:Bottom'/>
+                    <View style={styles.container}>
+                    <Text style={styles.texto}>Menu Practicas</Text>
+                    <View style={styles.contenedorBotones}>
+                    <Button color='#8015bfff' onPress={()=>setScreen('contador')} title='Practica:Contador'/>
+                    <Button color='#bf2c15ff' onPress={()=>setScreen('botones')} title='Practica:Buttons'/>
+                    <Button color='#151bbfff' onPress={()=>setScreen('textImput')} title='Practica:TextImput'/>
+                    <Button color='#bf1562ff' onPress={()=>setScreen('ImageBackground')} title='Practica:ImageBackground'/>
+                    <Button color='#15bf48ff' onPress={()=>setScreen('scrollview')} title='Practica:ScrollView'/>
+                    <Button color='#bfb415ff' onPress={()=>setScreen('activityindicator')} title='Practica:ActivityIndicator'/>
+                    <Button color='#15bfa5ff' onPress={()=>setScreen('flatList')} title='Practica:FlatList'/>
+                    <Button color='#bf1551ff' onPress={()=>setScreen('modal')} title='Practica:Modal'/>
+                    <Button color='#84bf15ff' onPress={()=>setScreen('bottom')} title='Practica:Bottom'/>
+                    </View>
                     </View>
     )
 
@@ -57,9 +59,25 @@ export default function MenuScreen() {
   }
 
 const styles = StyleSheet.create({
+
+    container: {
+    flex: 1,
+    backgroundColor: '#f8f8f8ff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  texto:{
+    color:'#1f1f22ff',
+    fontSize: 30,
+    fontFamily:'Time New Roman',
+    fontWeight:'bold',
+    textDecorationLine:'underline',
+  },
+
     contenedorBotones:{
     marginTop:15,
-    flexDirection:'row',
+    flexDirection:'column',
     gap:20,
   },
 })
