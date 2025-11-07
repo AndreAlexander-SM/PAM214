@@ -1,7 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ImageBackground, SafeAreaView, Button, Alert, ScrollView} from 'react-native';
 import { useState, useEffect } from 'react';
-import { RefreshControl } from 'react-native-web';
 
 
 export default function App() {
@@ -13,14 +12,6 @@ export default function App() {
       title='Guardar'
       />);
     }  
-
-  const[refreshing, setRefreshing] = useState(false);
-  const onRefresh = () =>{
-    setRefreshing(true);
-    setTimeout(() =>{
-      setRefreshing(false);
-    }, 2000);
-  } 
   
   
   const [showSplash, setShowSplash] = useState(true)
@@ -46,16 +37,38 @@ export default function App() {
        }}
        style={styles.background}
       >
-        <View style={styles.overlay}>
-      <ScrollView 
-      showsVerticalScrollIndicator={false}
-      
-      refreshControl={
-        <RefreshControl refreshing ={refreshing} onRefresh={onRefresh}/>
-      }
-      />
+        <ScrollView>
+      <View style={styles.overlay}>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
        <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
        <Text style={styles.text}>Estudiante de la universidad UPQ</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
        <Text style={styles.text}>Soy un chico que le gusta mucho el deporte y el estudio</Text>
        <Text style={styles.text}>124051521@upq.edu.mx</Text>
        <Text style={styles.text}>4424734727</Text>
@@ -67,7 +80,7 @@ export default function App() {
        color={'#de6417ff'}
        />
         </View>
-
+        </ScrollView>
       </ImageBackground>
     </SafeAreaView>
   );
