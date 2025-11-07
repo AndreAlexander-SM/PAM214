@@ -1,10 +1,28 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ImageBackground, SafeAreaView} from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, SafeAreaView, Button, Alert, ScrollView} from 'react-native';
 import { useState, useEffect } from 'react';
-import { SafeAreaView } from 'react-native-web';
+import { RefreshControl } from 'react-native-web';
+
 
 export default function App() {
 
+
+  const mostrarAlerta = () =>
+    {
+      alert(<Button
+      title='Guardar'
+      />);
+    }  
+
+  const[refreshing, setRefreshing] = useState(false);
+  const onRefresh = () =>{
+    setRefreshing(true);
+    setTimeout(() =>{
+      setRefreshing(false);
+    }, 2000);
+  } 
+  
+  
   const [showSplash, setShowSplash] = useState(true)
   useEffect (() => {
     const timer = setTimeout(()=>{
@@ -29,7 +47,25 @@ export default function App() {
        style={styles.background}
       >
         <View style={styles.overlay}>
-       <Text>Hola</Text>
+      <ScrollView 
+      showsVerticalScrollIndicator={false}
+      
+      refreshControl={
+        <RefreshControl refreshing ={refreshing} onRefresh={onRefresh}/>
+      }
+      />
+       <Text style={styles.text}>Andre Alexander Sierra Martinez</Text>
+       <Text style={styles.text}>Estudiante de la universidad UPQ</Text>
+       <Text style={styles.text}>Soy un chico que le gusta mucho el deporte y el estudio</Text>
+       <Text style={styles.text}>124051521@upq.edu.mx</Text>
+       <Text style={styles.text}>4424734727</Text>
+        </View>
+        <View>
+          <Button
+       title="Editar Perfil"
+       onPress={mostrarAlerta}
+       color={'#de6417ff'}
+       />
         </View>
 
       </ImageBackground>
@@ -65,5 +101,11 @@ const styles = StyleSheet.create({
     backgroundColor:'rgba(0,0,0,0.5)',
     padding: 20,
     borderRadius: 10,
+  },
+  text:{
+    fontSize:25,
+    color: '#fff',
+    marginBottom: 10,
+    textAlign: 'center',
   },
 });
