@@ -1,9 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Alert, ActivityIndicator, Platform } from 'react-native';
-// Importamos el controlador
 import { UsuarioController } from '../controllers/UsuarioController';
 
-// Instanciamos el controlador
 const controller = new UsuarioController();
 
 export default function InsertUsuarioScreen() {
@@ -12,6 +10,7 @@ export default function InsertUsuarioScreen() {
   const [nombre, setNombre] = useState('');
   const [loading, setLoading] = useState(true);
   const [guardando, setGuardando] = useState(false);
+  const [editando, setEditando] = useState(null); // nuevo: id del usuario que se está editando
 
   // --- LÓGICA DEL CONTROLADOR (MVC) ---
 
@@ -21,7 +20,6 @@ export default function InsertUsuarioScreen() {
       setLoading(true);
       const data = await controller.obtenerUsuarios();
       setUsuarios(data);
-      // console.log(`${data.length} usuarios cargados`);
       setLoading(false);
     } catch (error) {
       Alert.alert('Error', error.message);
@@ -36,24 +34,26 @@ export default function InsertUsuarioScreen() {
     };
     init();
 
-    // Suscribirse a cambios automáticos
     controller.addListener(cargarUsuarios);
-
-    // Limpiar suscripción al salir
-    return () => {
-      controller.removeListener(cargarUsuarios);
-    };
+    return () => controller.removeListener(cargarUsuarios);
   }, [cargarUsuarios]);
 
-  // 3. Manejar la creación de usuario
-  const handleAgregar = async () => {
+  // 3. Crear o actualizar usuario
+  const handleGuardar = async () => {
     if (guardando) return;
     try {
       setGuardando(true);
-      const usuarioCreado = await controller.crearUsuario(nombre);
-      
-      Alert.alert('Usuario Creado', `"${usuarioCreado.nombre}" guardado con ID: ${usuarioCreado.id}`);
-      setNombre(''); // Limpiar input
+
+      if (editando) {
+        await controller.actualizarUsuario(editando, nombre);
+        Alert.alert('Usuario Actualizado', 'El usuario fue modificado correctamente.'); 
+        setEditando(null);
+      } else {
+        const usuarioCreado = await controller.crearUsuario(nombre);
+        Alert.alert('Usuario Creado', `"${usuarioCreado.nombre}" guardado con ID: ${usuarioCreado.id}`);
+      }
+
+      setNombre('');
     } catch (error) {
       Alert.alert('Error', error.message);
     } finally {
@@ -61,7 +61,45 @@ export default function InsertUsuarioScreen() {
     }
   };
 
-  // 4. Renderizar cada item de la lista
+  // 4. Eliminar usuario
+ const handleEliminar = (id) => {
+  if (Platform.OS === 'web') {
+    const confirmar = window.confirm('¿Deseas eliminar este usuario?');
+    if (confirmar) {
+      controller.eliminarUsuario(id)
+        .then(() => {
+          alert('Usuario eliminado correctamente');
+        })
+        .catch((error) => {
+          alert('Error al eliminar: ' + error.message);
+        });
+    }
+  } else {
+    Alert.alert(
+      'Confirmar eliminación',
+      '¿Deseas eliminar este usuario?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          onPress: async () => {
+            await controller.eliminarUsuario(id);
+            Alert.alert('Eliminado', 'Usuario eliminado correctamente');
+          },
+          style: 'destructive',
+        },
+      ]
+    );
+  }
+};
+
+  // 5. Editar usuario
+  const handleEditar = (usuario) => {
+    setEditando(usuario.id);
+    setNombre(usuario.nombre);
+  };
+
+  // 6. Renderizar usuario
   const renderUsuario = ({ item, index }) => (
     <View style={styles.userItem}>
       <View style={styles.userNumber}>
@@ -74,9 +112,19 @@ export default function InsertUsuarioScreen() {
           {new Date(item.fechaCreacion).toLocaleDateString('es-MX', {
             year: 'numeric',
             month: 'long',
-            day: 'numeric'
+            day: 'numeric',
           })}
         </Text>
+      </View>
+
+      {/* Botones Editar y Eliminar */}
+      <View style={{ flexDirection: 'row' }}>
+        <TouchableOpacity style={styles.editButton} onPress={() => handleEditar(item)}>
+          <Text style={styles.actionText}>Editar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.deleteButton} onPress={() => handleEliminar(item.id)}>
+          <Text style={styles.actionText}>Eliminar</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -84,16 +132,18 @@ export default function InsertUsuarioScreen() {
   return (
     <View style={styles.container}>
 
-      {/* Zona del encabezado */}
-      <Text style={styles.title}> INSERT & SELECT</Text>
+      {/* Encabezado */}
+      <Text style={styles.title}> CRUD COMPLETO (Insert / Select / Update / Delete)</Text>
       <Text style={styles.subtitle}>
         {Platform.OS === 'web' ? ' WEB (LocalStorage)' : ` ${Platform.OS.toUpperCase()} (SQLite)`}
       </Text>
 
-      {/* Zona del INSERT */}
+      {/* Sección Insert / Update */}
       <View style={styles.insertSection}>
-        <Text style={styles.sectionTitle}> Insertar Usuario</Text>
-        
+        <Text style={styles.sectionTitle}>
+          {editando ? 'Editar Usuario' : 'Insertar Usuario'}
+        </Text>
+
         <TextInput
           style={styles.input}
           placeholder="Escribe el nombre del usuario"
@@ -102,27 +152,30 @@ export default function InsertUsuarioScreen() {
           editable={!guardando}
         />
 
-        <TouchableOpacity 
-          style={[styles.button, guardando && styles.buttonDisabled]} 
-          onPress={handleAgregar} 
-          disabled={guardando} >
-
+        <TouchableOpacity
+          style={[styles.button, guardando && styles.buttonDisabled]}
+          onPress={handleGuardar}
+          disabled={guardando}
+        >
           <Text style={styles.buttonText}>
-            {guardando ? ' Guardando...' : 'Agregar Usuario'}
+            {guardando ? ' Guardando...' : editando ? 'Actualizar Usuario' : 'Agregar Usuario'}
           </Text>
-
         </TouchableOpacity>
+
+        {editando && (
+          <TouchableOpacity onPress={() => { setEditando(null); setNombre(''); }}>
+            <Text style={{ color: '#007AFF', textAlign: 'center', marginTop: 10 }}>
+              Cancelar edición
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
-      {/* Zona del SELECT */}
+      {/* Sección Select */}
       <View style={styles.selectSection}>
-
         <View style={styles.selectHeader}>
           <Text style={styles.sectionTitle}>Lista de Usuarios</Text>
-
-          <TouchableOpacity 
-            style={styles.refreshButton}
-            onPress={cargarUsuarios} > 
+          <TouchableOpacity style={styles.refreshButton} onPress={cargarUsuarios}>
             <Text style={styles.refreshText}>Recargar</Text>
           </TouchableOpacity>
         </View>
@@ -132,11 +185,11 @@ export default function InsertUsuarioScreen() {
             <ActivityIndicator size="large" color="#007AFF" />
             <Text style={styles.loadingText}>Cargando usuarios...</Text>
           </View>
-           ) : (
+        ) : (
           <FlatList
-            data={usuarios} 
+            data={usuarios}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={renderUsuario} 
+            renderItem={renderUsuario}
             ListEmptyComponent={
               <View style={styles.emptyContainer}>
                 <Text style={styles.emptyText}> No hay usuarios</Text>
@@ -146,18 +199,18 @@ export default function InsertUsuarioScreen() {
             contentContainerStyle={usuarios.length === 0 && styles.emptyList}
           />
         )}
-
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  // 🔹 Tus estilos originales, sin cambios:
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
     paddingTop: 50,
-},
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -257,6 +310,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderLeftWidth: 4,
     borderLeftColor: '#007AFF',
+    alignItems: 'center',
   },
   userNumber: {
     width: 35,
@@ -306,5 +360,17 @@ const styles = StyleSheet.create({
   emptySubtext: {
     fontSize: 14,
     color: '#bbb',
+  },
+
+  editButton: {
+    marginHorizontal: 4,
+    padding: 6,
+  },
+  deleteButton: {
+    marginHorizontal: 4,
+    padding: 6,
+  },
+  actionText: {
+    fontSize: 18,
   },
 });
